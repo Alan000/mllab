@@ -4,26 +4,25 @@ import org.zwx.mllab.common.vector.NamedVector;
 import org.zwx.mllab.common.vector.Vector;
 import org.zwx.mllab.lang.UnsupportedException;
 
-public class LocalWeightLinearRegressionModel extends RegressionModel{
+public class LocalWeightLinearRegressionModel extends RegressionModel {
+
+	LocalWeightLinearRegressionPolicy policy;
 
 	@Override
 	public double evaluate(Vector inputV) {
-		// TODO Auto-generated method stub
-		return 0;
+		return policy.getParams(inputV).dot(inputV);
 	}
 
 	@Override
 	Vector getParamsGradient(NamedVector<Double> inputNV) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedException("get params gradient not support by no-params function");
 	}
 
 	@Override
 	double getParamGradient(NamedVector<Double> inputNV, int paramIndex) {
-		// TODO Auto-generated method stub
-		return 0;
+		throw new UnsupportedException("get param gradient not support by no-params function");
 	}
-	
+
 	@Override
 	public void updateParams(Vector params) {
 		throw new UnsupportedException("update params not support by no-params function");
@@ -33,6 +32,5 @@ public class LocalWeightLinearRegressionModel extends RegressionModel{
 	public Vector getParams() {
 		throw new UnsupportedException("get params not support by no-params function");
 	}
-	
-	
+
 }

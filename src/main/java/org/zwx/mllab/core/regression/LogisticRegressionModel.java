@@ -4,22 +4,14 @@ import org.zwx.mllab.common.vector.NamedVector;
 import org.zwx.mllab.common.vector.Vector;
 import org.zwx.mllab.lang.SizeException;
 
-public class LinearRegressionModel extends RegressionModel {
-
-	public LinearRegressionModel(Vector params) {
-		this.params = params;
-	}
+public class LogisticRegressionModel extends RegressionModel {
 
 	@Override
 	public double evaluate(Vector inputV) {
 		if (params.size() != inputV.size())
 			throw new SizeException();
 		else
-			return params.dot(inputV);
-	}
-
-	public String toString() {
-		return "LRM={" + params.toString() + "}";
+			return 1.0 / (1.0 + Math.exp(-params.dot(inputV)));
 	}
 
 	@Override
