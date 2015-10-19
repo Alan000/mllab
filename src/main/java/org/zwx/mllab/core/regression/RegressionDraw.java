@@ -74,6 +74,8 @@ public class RegressionDraw extends Applet {
 			v.set(0, 1.0);
 			v.set(1, i / zoom);
 			double value = model.evaluate(v);
+			if (value * radius1 > getHeight())
+				break;
 			drowPoint(g, new NamedVector<Double>(value, v), radius1);
 		}
 
