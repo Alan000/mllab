@@ -1,12 +1,11 @@
 package org.zwx.mllab.core.regression;
 
+import org.apache.mahout.math.SequentialAccessSparseVector;
+import org.apache.mahout.math.Vector;
 import org.zwx.mllab.core.Model;
 import org.zwx.mllab.core.Policy;
 import org.zwx.mllab.core.TrainSets;
 import org.zwx.mllab.lang.TypeMatchException;
-import org.zwx.mllab.vector.DenseVector;
-import org.zwx.mllab.vector.NamedVector;
-import org.zwx.mllab.vector.Vector;
 
 public abstract class RegressionPolicy implements Policy<NamedVector<Double>> {
 
@@ -22,7 +21,7 @@ public abstract class RegressionPolicy implements Policy<NamedVector<Double>> {
 	public abstract void run(final TrainSets<NamedVector<Double>> ts, RegressionModel model) throws Exception;
 	
 	public static Vector initializeVector(int size) {
-		return new DenseVector(size);
+		return new SequentialAccessSparseVector(size);
 	}
 
 }

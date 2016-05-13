@@ -1,9 +1,8 @@
 package org.zwx.mllab.core.regression;
 
+import org.apache.mahout.math.SequentialAccessSparseVector;
+import org.apache.mahout.math.Vector;
 import org.zwx.mllab.lang.SizeException;
-import org.zwx.mllab.vector.NamedVector;
-import org.zwx.mllab.vector.SequentialAccessSparseVector;
-import org.zwx.mllab.vector.Vector;
 
 public class LinearRegressionModel extends RegressionModel {
 

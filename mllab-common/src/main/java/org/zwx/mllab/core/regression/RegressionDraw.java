@@ -6,10 +6,9 @@ import java.awt.Graphics;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
+import org.apache.mahout.math.SequentialAccessSparseVector;
+import org.apache.mahout.math.Vector;
 import org.zwx.mllab.core.TrainSets;
-import org.zwx.mllab.vector.DenseVector;
-import org.zwx.mllab.vector.NamedVector;
-import org.zwx.mllab.vector.Vector;
 
 public class RegressionDraw extends Applet {
 	private static final long serialVersionUID = 3232989527976843652L;
@@ -49,7 +48,7 @@ public class RegressionDraw extends Applet {
 	}
 
 	protected static Vector initializeVector(int size) {
-		return new DenseVector(size);
+		return new SequentialAccessSparseVector(size);
 	}
 
 	@Override

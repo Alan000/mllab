@@ -2,27 +2,34 @@ package org.zwx.mllab.core.regression;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
+import org.apache.mahout.math.Vector;
+import org.apache.mahout.math.Vector.Element;
 import org.zwx.mllab.core.TrainSets;
-import org.zwx.mllab.vector.NamedVector;
-import org.zwx.mllab.vector.Vector;
 
 public class SGDRegressionPolicy extends RegressionPolicy {
 
-	private int loop = 200;
+	private int loop = 100;
 
-	private double alpha = 0.7;
+	private double learning_rate = 0.1;
 
-	private double threshold = 0.01;
+	private double lamb = 1E-6;
+
+	private double threshold = 0.001;
+
+	private double initWeight = 0.05;
 
 	@Override
 	public void run(TrainSets<NamedVector<Double>> ts, RegressionModel model) {
+		initWeight(ts, model);
 		if (model instanceof LogisticRegressionModel) {
 			normalize(ts);
 		}
 
-		ts = disorder(ts);
+//		ts = disorder(ts);
 
 		double preError = 0.0;
 		double curError = 0.0;
@@ -37,12 +44,12 @@ public class SGDRegressionPolicy extends RegressionPolicy {
 					mis *= ((NamedWeightVector<?>) instance).getWeight();
 				}
 				curError += mis;
-				Vector adjust = model.getParamsGradient(instance).times(-alpha);
+				Vector adjust = model.getParamsGradient(instance).times(-learning_rate);
 				if (instance instanceof NamedWeightVector)
 					model.updateParams(
 							model.getParams().plus(adjust.times(((NamedWeightVector<Double>) instance).getWeight())));
 				else
-					model.updateParams(model.getParams().plus(adjust));
+					model.updateParams(model.getParams().times(1 - lamb).plus(adjust));
 			}
 			double mis = Math.abs((curError - preError) / curError);
 			System.out.println("Loop" + i + ":\t" + curError + "\t|\t" + preError + "\t|\t" + mis);
@@ -52,6 +59,19 @@ public class SGDRegressionPolicy extends RegressionPolicy {
 			}
 		}
 
+	}
+
+	private void initWeight(TrainSets<NamedVector<Double>> ts, RegressionModel model) {
+		Set<Integer> labels = new HashSet<Integer>();
+		Random random = new Random(10);
+		for (NamedVector<Double> instance : ts) {
+			for (Element e : instance.getValue().nonZeroes()) {
+				int label = e.index();
+				if (!labels.contains(label)) {
+					model.getParams().set(label, (random.nextFloat() - 0.5) * initWeight);
+				}
+			}
+		}
 	}
 
 	@SuppressWarnings("unchecked")

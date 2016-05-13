@@ -22,8 +22,8 @@ public class SequentialAccessSparseVector extends AbstractVector {
 		this(0);
 	}
 
-	public SequentialAccessSparseVector(int cardinality) {
-		this(cardinality, Math.min(100, cardinality / 1000 < 10 ? 10 : cardinality / 1000));
+	public SequentialAccessSparseVector(int cardinality) {		
+		this(cardinality, Math.min(20, (cardinality / 1000) < 10 ? 10 : (cardinality / 1000)));
 	}
 
 	public SequentialAccessSparseVector(int cardinality, int capacity) {

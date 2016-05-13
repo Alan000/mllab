@@ -3,11 +3,11 @@ package org.zwx.mllab.core.regression;
 import java.io.BufferedReader;
 import java.io.FileReader;
 
+import org.apache.mahout.math.DenseVector;
+import org.apache.mahout.math.Vector;
+import org.apache.mahout.math.Vector.Element;
 import org.zwx.mllab.core.TrainSets;
 import org.zwx.mllab.lang.TypeMatchException;
-import org.zwx.mllab.vector.NamedVector;
-import org.zwx.mllab.vector.Vector;
-import org.zwx.mllab.vector.Vector.Element;
 
 import Jama.Matrix;
 
@@ -29,7 +29,7 @@ public class LinearRegressionPolicy extends RegressionPolicy {
 				}
 			}
 			Matrix theta = (X.transpose().times(X)).inverse().times(X.transpose()).times(Y);
-			model.getParams().setAll(theta.getColumnVector(0));
+			model.updateParams(new DenseVector(theta.getColumnVector(0)));
 
 		} else {
 			throw new TypeMatchException();

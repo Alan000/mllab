@@ -3,10 +3,9 @@ package org.zwx.mllab.core.regression;
 import java.io.BufferedReader;
 import java.io.FileReader;
 
+import org.apache.mahout.math.Vector;
 import org.zwx.mllab.core.Model;
 import org.zwx.mllab.core.TrainSets;
-import org.zwx.mllab.vector.NamedVector;
-import org.zwx.mllab.vector.Vector;
 
 public class BGDRegressionPolicy extends RegressionPolicy {
 	private double alpha = 0.1;

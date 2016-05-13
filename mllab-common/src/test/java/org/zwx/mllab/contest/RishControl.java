@@ -7,24 +7,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.apache.mahout.math.SequentialAccessSparseVector;
+import org.apache.mahout.math.Vector;
 import org.zwx.mllab.core.TrainSets;
 import org.zwx.mllab.core.regression.LogisticRegressionModel;
+import org.zwx.mllab.core.regression.NamedVector;
 import org.zwx.mllab.core.regression.NamedWeightVector;
 import org.zwx.mllab.core.regression.RegressionModel;
 import org.zwx.mllab.core.regression.SGDRegressionPolicy;
 import org.zwx.mllab.encoder.Encoder;
 import org.zwx.mllab.encoder.MurmurHashEncoder;
 import org.zwx.mllab.util.Tuple2;
-import org.zwx.mllab.vector.NamedVector;
-import org.zwx.mllab.vector.SequentialAccessSparseVector;
-import org.zwx.mllab.vector.Vector;
 
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
 
 public class RishControl {
 
-	static final int dimension = 50000;
+	static final int dimension = 20000;
 	static final Encoder<Integer> encoder = new MurmurHashEncoder(dimension);
 
 	private static TrainSets<NamedVector<Double>> loadInstances(String path) throws IOException {
@@ -83,26 +83,41 @@ public class RishControl {
 
 	}
 
-	private static TrainSets<NamedVector<Double>> weight(TrainSets<NamedVector<Double>> trainSet) {
-		double P = 0;
+	private static TrainSets<NamedVector<Double>> sampleAndWeight(TrainSets<NamedVector<Double>> trainSet) {
+		double N = 0;
 		for (NamedVector<Double> nv : trainSet) {
-			if (nv.getName() == 1.0)
-				P++;
+			if (nv.getName() == 0.0)
+				N++;
 		}
+		double SAMPLE_COR = 1.0;
+		double SAMPLE_RATE = SAMPLE_COR * (trainSet.size() - N) / N;
+		double PW = 1.0;
+		double NW = 1.0 / SAMPLE_RATE;
 
-		double PW = 1.0 - P / trainSet.size();
-		double NW = 1.0 - PW;
-
-		TrainSets<NamedVector<Double>> result = new TrainSets<NamedVector<Double>>();
+		TrainSets<NamedVector<Double>> weight = new TrainSets<NamedVector<Double>>();
 		for (NamedVector<Double> nv : trainSet) {
 			NamedWeightVector<Double> nwv = new NamedWeightVector<Double>(nv.getName(), nv.getValue());
 			if (nv.getName() == 1.0)
 				nwv.setWeight(PW);
 			else
 				nwv.setWeight(NW);
-			result.add(nwv);
+			weight.add(nwv);
 		}
-		return result;
+
+		TrainSets<NamedVector<Double>> sample = new TrainSets<NamedVector<Double>>();
+
+		Random random = new Random();
+		for (NamedVector<Double> nv : weight) {
+			if (nv.getName() == 1.0)
+				sample.add(nv);
+			else {
+				if (random.nextDouble() <= SAMPLE_RATE)
+					sample.add(nv);
+			}
+		}
+
+		System.out.println("sample:" + sample.size());
+		return sample;
 	}
 
 	private static List<Tuple2<Double, Double>> roc(List<Tuple2<Double, Double>> preList) {
@@ -136,7 +151,8 @@ public class RishControl {
 		String dataSource = "E:\\data\\contest\\kesci\\魔镜风控\\PPD-First-Round-Data-Updated\\PPD-First-Round-Data-Update\\Training Set\\PPD_Training_Master_GBK_3_1_Training_Set.csv";
 		TrainSets<NamedVector<Double>> allSets = loadInstances(dataSource);
 		Tuple2<TrainSets<NamedVector<Double>>, TrainSets<NamedVector<Double>>> splits = split(allSets);
-		TrainSets<NamedVector<Double>> trainSet = weight(splits.get_1());
+		//TrainSets<NamedVector<Double>> trainSet = sampleAndWeight(splits.get_1());
+		TrainSets<NamedVector<Double>> trainSet = splits.get_1();
 		TrainSets<NamedVector<Double>> testSet = splits.get_2();
 
 		SGDRegressionPolicy sgd = new SGDRegressionPolicy();
@@ -157,7 +173,8 @@ public class RishControl {
 		}
 		System.out.println(set);
 
-		System.out.println(roc(preList));
+		
+		System.out.println(preList);
 	}
 
 }

@@ -1,7 +1,6 @@
 package org.zwx.mllab.core.regression;
 
-import org.zwx.mllab.vector.NamedVector;
-import org.zwx.mllab.vector.Vector;
+import org.apache.mahout.math.Vector;
 
 public class NamedWeightVector<K> extends NamedVector<K>{
 	

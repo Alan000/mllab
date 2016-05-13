@@ -1,8 +1,7 @@
 package org.zwx.mllab.core.regression;
 
+import org.apache.mahout.math.Vector;
 import org.zwx.mllab.lang.UnsupportedException;
-import org.zwx.mllab.vector.NamedVector;
-import org.zwx.mllab.vector.Vector;
 
 public class LocalWeightLinearRegressionModel extends RegressionModel {
 

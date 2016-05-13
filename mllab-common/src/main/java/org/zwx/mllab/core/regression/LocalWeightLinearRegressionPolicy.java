@@ -3,12 +3,11 @@ package org.zwx.mllab.core.regression;
 import java.io.BufferedReader;
 import java.io.FileReader;
 
+import org.apache.mahout.math.DenseVector;
+import org.apache.mahout.math.Vector;
+import org.apache.mahout.math.Vector.Element;
 import org.zwx.mllab.core.TrainSets;
 import org.zwx.mllab.lang.TypeMatchException;
-import org.zwx.mllab.vector.DenseVector;
-import org.zwx.mllab.vector.NamedVector;
-import org.zwx.mllab.vector.Vector;
-import org.zwx.mllab.vector.Vector.Element;
 
 import Jama.Matrix;
 
@@ -48,15 +47,14 @@ public class LocalWeightLinearRegressionPolicy extends RegressionPolicy {
 			}
 		}
 		Matrix theta = (X.transpose().times(w).times(X)).inverse().times(X.transpose()).times(w).times(Y);
-		Vector params = new DenseVector(x.size());
-		params.setAll(theta.getColumnVector(0));
+		Vector params = new DenseVector(theta.getColumnVector(0));		
 		return params;
 	}
 
 	private Matrix getW(Vector x) {
 		Matrix w = new Matrix(ts.size(), ts.size());
 		for (int i = 0; i < ts.size(); i++) {
-			double wi = Math.exp(-ts.get(i).getValue().minus(x).lengthSquare() / (2 * t * t));
+			double wi = Math.exp(-ts.get(i).getValue().minus(x).getLengthSquared() / (2 * t * t));
 			w.set(i, i, wi);
 		}
 		return w;

@@ -1,5 +1,6 @@
-package org.zwx.mllab.vector;
+package org.zwx.mllab.core.regression;
 
+import org.apache.mahout.math.Vector;
 
 public class NamedVector<K> {
 
